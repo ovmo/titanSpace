@@ -97,7 +97,7 @@ public class RungeKuttaSolver implements ODESolverInterface {
         Rate newRate = k1.add(k2.mul(2)).add(k3.mul(2)).add(k4);
 
         //newState = y + 1/6 * newRate
-        State newState = (State) y.addMul(1.0/6.0, newRate);
+        StateInterface newState = y.addMul(1.0/6.0, newRate);
 
         return newState;
     }
