@@ -1,37 +1,54 @@
 package test;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import simulator.ODEFunction;
+import simulator.PlanetStart2020;
 import simulator.RungeKuttaSolver;
 import simulator.State;
+import simulator.VerletSolver;
+import simulator.EulerSolver;
 import titan.StateInterface;
 
 class ODEFunctionTest {
-    static final double ACCURACY = 2875700; // titan
-
-
+    static final double ACCURACY = 100; // titan
+    static final double EXPECTED = 6.332873363075275E+08;
+    static PlanetStart2020 planet2020 = new PlanetStart2020();
+    static final int T = 0; // time point
+    static final int H = 8; // Step size
+    static final ODEFunction odeF = new ODEFunction();
+    
     @Test
     void testRungeKuttaX()
     {
-        int accuracyRK = 100;
         RungeKuttaSolver rungeKutta = new RungeKuttaSolver();
-        ODEFunction odeF = new ODEFunction();
         State y0 = new State();
         y0.initializeState();
-        int t = 0; // time point
-        int h = 8; // Step size
-        StateInterface rungeKuttaStep = rungeKutta.step(odeF, t, y0, h);
-        // assertEquals(expected, rungeKuttaStep.state[3][0].getX(), accuracyRK)
+        
+        State rungeKuttaStep = (State) (rungeKutta.step(odeF, T, y0, H));
+        assertEquals(EXPECTED, rungeKuttaStep.state[8][0].getX(), ACCURACY);
     }
 
-    public static void main(String[] args) {
-        RungeKuttaSolver rungeKutta = new RungeKuttaSolver();
-        ODEFunction odeF = new ODEFunction();
+    @Test 
+    void testVerletX()
+    {
+        VerletSolver verlet = new VerletSolver();
         State y0 = new State();
         y0.initializeState();
-        int t = 0; // time point
-        int h = 8; // Step size
-        State rungeKuttaStep = (State)(rungeKutta.step(odeF, t, y0, h));
-        System.out.println(rungeKuttaStep.state[11][0].getX());
+
+        State verletStep = (State) (verlet.step(odeF, T, y0, H));
+        assertEquals(EXPECTED, verletStep.state[8][0].getX(), ACCURACY);
     }
+    //Test
+    @Test 
+    void testEulerX()
+    {
+        EulerSolver eulersolver = new EulerSolver();
+        State y0 = new State();
+        y0.initializeState();
+
+        State eulersolverstep = (State) (eulersolver.step(odeF, T, y0, H));
+        assertEquals(EXPECTED, eulersolverstep.state[8][0].getX(), ACCURACY);
+    }
+
+    
 }
